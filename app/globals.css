@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Kolor aktywnego "żywiołu" – animowany przez GSAP w ElementBackground */
+  --accent: #0284c7;
+  /* jaśniejszy odcień do małego tekstu na ciemnym tle (kontrast) */
+  --accent-light: #7dd3fc;
+}
+
+html {
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: #1e293b;
+  color: #e2e8f0;
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* Lenis (płynny scroll) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes wave {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes sway {
+  from { transform: rotate(-3.5deg); }
+  to { transform: rotate(3.5deg); }
+}
+@keyframes flicker {
+  0%, 100% { transform: scale(1) rotate(-1deg); opacity: 0.9; }
+  25% { transform: scale(1.06, 1.1) rotate(1.5deg); opacity: 1; }
+  50% { transform: scale(0.97, 1.03) rotate(-0.5deg); opacity: 0.85; }
+  75% { transform: scale(1.04, 1.08) rotate(1deg); opacity: 1; }
+}
+@keyframes scroll-line {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+@layer components {
+  .text-gradient {
+    background: linear-gradient(90deg, #38bdf8 0%, #2dd4bf 50%, #fb923c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Tekst ukryty do momentu podziału na linie (SplitText) – bez błysku */
+  .split-pending {
+    visibility: hidden;
+  }
+
+  /* Maska linii nie może ucinać ogonków (ę, ą, y, g) */
+  .split-line-mask,
+  .split-mask {
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+  }
+
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 72px 72px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 75%);
+  }
+
+  .noise {
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* Suwak metrażu */
+  .range-accent {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    border-radius: 9999px;
+    outline: none;
+    cursor: pointer;
+  }
+  .range-accent::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 7px solid var(--accent);
+    box-shadow: 0 4px 18px -2px var(--accent);
+    transition: transform 0.2s;
+  }
+  .range-accent:active::-webkit-slider-thumb {
+    transform: scale(1.15);
+  }
+  .range-accent::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 7px solid var(--accent);
+    box-shadow: 0 4px 18px -2px var(--accent);
+  }
+  .range-accent::-moz-range-track {
+    background: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .split-pending {
+    visibility: visible;
+  }
+}
